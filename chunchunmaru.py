@@ -2,10 +2,10 @@ import common, utils, drawer
 import argparse
 
 def build_res_pack(ctx: common.McContext) -> None:
-    # process ores
+    # ===== process ores =====
     # overworld
     utils.border_ore_block(ctx, 'coal_ore', '#2e2e2e')
-    utils.border_ore_block(ctx, 'copper_ore', '#818058')
+    utils.border_ore_block(ctx, 'copper_ore', '#a65947')
     utils.border_ore_block(ctx, 'diamond_ore', '#1ed0d6')
     utils.border_ore_block(ctx, 'emerald_ore', '#17c544')
     utils.border_ore_block(ctx, 'gold_ore', '#fcee4b')
@@ -15,6 +15,9 @@ def build_res_pack(ctx: common.McContext) -> None:
     # nether
     drawer.border_block_texture(ctx, 'nether_gold_ore', '#fcee4b')
     drawer.border_block_texture(ctx, 'nether_quartz_ore', '#d4caba')
+    # nether ancient debris need colorful border
+    drawer.colorful_border_block_texture(ctx, 'ancient_debris_side')
+    drawer.colorful_border_block_texture(ctx, 'ancient_debris_top')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(

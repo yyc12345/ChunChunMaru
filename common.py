@@ -15,6 +15,8 @@ class McContext():
         self.__validate_src_path()
         # set dst path layout
         self.__layout_dst_path()
+        # set res pack info
+        self.__deploy_res_pack_info()
 
     def __validate_src_path(self) -> None:
         assert(os.path.isdir(os.path.join(self.__mSrcPath, 'assets/minecraft/blockstates')))
@@ -26,36 +28,52 @@ class McContext():
         os.makedirs(os.path.join(self.__mDstPath, 'assets/minecraft/models/block'), exist_ok=True)
         os.makedirs(os.path.join(self.__mDstPath, 'assets/minecraft/textures/block'), exist_ok=True)
 
+    def __deploy_res_pack_info(self) -> None:
+        # write package info
+        payload: typing.Any = {
+            "pack": {
+                "pack_format": self.__mVer,
+                "description": "ChunChunMaru Resource Package"
+            }
+        }
+        save_json(os.path.join(self.__mDstPath, 'pack.mcmeta'), payload)
+
+        # set package icon
+
 
     def get_mc_ver(self) -> int:
         return self.__mVer
-    
+
     def get_src_custom(self, path: str) -> str:
-        return os.join(self.__mSrcPath, 'assets/minecraft', path)
-    
+        return os.path.join(self.__mSrcPath, 'assets/minecraft', path)
+
     def get_dst_custom(self, path: str) -> str:
-        return os.join(self.__mDstPath, 'assets/minecraft', path)
+        return os.path.join(self.__mDstPath, 'assets/minecraft', path)
 
 
     def read_blockstate(self, name: str) -> typing.Any:
         return load_json(os.path.join(self.__mSrcPath, 'assets/minecraft/blockstates', name + '.json'))
-    
+
     def read_model(self, name: str) -> typing.Any:
         return load_json(os.path.join(self.__mSrcPath, 'assets/minecraft/models/block', name + '.json'))
-    
+
     def read_texture(self, name: str) -> PIL.Image.Image:
         path: str = os.path.join(self.__mSrcPath, 'assets/minecraft/textures/block', name + '.png')
         return PIL.Image.open(path)
 
     def write_blockstate(self, name: str, payload: typing.Any) -> None:
-        return save_json(os.path.join(self.__mDstPath, 'assets/minecraft/blockstates', name + '.json'), payload)
-    
+        save_json(os.path.join(self.__mDstPath, 'assets/minecraft/blockstates', name + '.json'), payload)
+
     def write_model(self, name: str, payload: typing.Any) -> None:
-        return save_json(os.path.join(self.__mDstPath, 'assets/minecraft/models/block', name + '.json'), payload)
-    
+        save_json(os.path.join(self.__mDstPath, 'assets/minecraft/models/block', name + '.json'), payload)
+
     def write_texture(self, name: str, img: PIL.Image.Image) -> None:
         path: str = os.path.join(self.__mDstPath, 'assets/minecraft/textures/block', name + '.png')
         img.save(path)
+
+    def write_texture_meta(self, name: str, payload: typing.Any) -> None:
+        save_json(os.path.join(self.__mDstPath, 'assets/minecraft/textures/block', name + '.png.mcmeta'), payload)
+
 
 def load_json(json_path: str) -> typing.Any:
     with open(json_path, 'r', encoding='utf-8') as fs:
@@ -68,7 +86,7 @@ def save_json(json_path: str, payload: typing.Any) -> None:
 g_HexColorRegex: re.Pattern = re.compile(r'^#[0-9a-f]{6}$')
 def resolve_hex_color(hex_color: str) -> tuple[int, int, int]:
     hex_color = hex_color.lower()
-    
+
     if g_HexColorRegex.match(hex_color) is None:
         raise Exception('invalid hex color string')
     return (
