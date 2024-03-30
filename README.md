@@ -57,9 +57,9 @@ This resource pack has:
 1. Create an empty folder for generated resource pack. I suggest you create a folder in `.minecraft/resourcepacks` so that you can test it dynamically.
 1. Open terminal in the folder where `chunchunmaru.py` located.
 1. Execute `python3 chunchunmaru.py -i [input_path] -o [output_path] -m [mc_ver]`
-  * `[input_path]` is replaced to your vanilla resource pack folder where you can find `assets` folder.
-  * `[output_path]` is replaced to your generated resource pack folder. If you create a folder named `ChunChunMaru` in the folder we suggested in step 2, this argument should be `.minecraft/resourcepacks/ChunChunMaru`.
-  * `[mc_ver]` is replaced to your expected resource pack version (not Minecraft version). For 1.19.4 instance, you should pass 13.
+    * `[input_path]` is replaced to your vanilla resource pack folder where you can find `assets` folder.
+    * `[output_path]` is replaced to your generated resource pack folder. If you create a folder named `ChunChunMaru` in the folder we suggested in step 2, this argument should be `.minecraft/resourcepacks/ChunChunMaru`.
+    * `[mc_ver]` is replaced to your expected resource pack version (not Minecraft version). For 1.19.4 instance, you should pass 13.
 1. Everything are done. You can open game to check out the result or compress the result as a zip file if you want to move it into another place.
 
 ## Credit and License
