@@ -28,6 +28,12 @@ def border_block_texture(ctx: common.McContext, name: str, color: str) -> None:
     # save result
     ctx.write_texture(name, img)
 
+    # if count is not zero, we should copy its animation data
+    if count > 1:
+        meta: typing.Any = ctx.read_texture_meta(name)
+        ctx.write_texture_meta(name, meta)
+
+g_ColorfulBorderBlockTextureMeta: typing.Any = {"animation": {"frametime": 5, "interpolate": True}}
 def colorful_border_block_texture(ctx: common.McContext, name: str) -> None:
     # read image and check size
     example: PIL.Image.Image = ctx.read_texture(name)
@@ -52,6 +58,9 @@ def colorful_border_block_texture(ctx: common.McContext, name: str) -> None:
     )
     # save it
     ctx.write_texture(name, img)
+
+    # create animation meta file
+    ctx.write_texture_meta(name, g_ColorfulBorderBlockTextureMeta)
 
 def border_door_block_texture(ctx: common.McContext, name: str) -> None:
     # proc top and bottom respectively

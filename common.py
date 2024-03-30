@@ -61,6 +61,9 @@ class McContext():
         path: str = os.path.join(self.__mSrcPath, 'assets/minecraft/textures/block', name + '.png')
         return PIL.Image.open(path)
 
+    def read_texture_meta(self, name: str) -> typing.Any:
+        return load_json(os.path.join(self.__mSrcPath, 'assets/minecraft/textures/block', name + '.png.mcmeta'))
+
     def write_blockstate(self, name: str, payload: typing.Any) -> None:
         save_json(os.path.join(self.__mDstPath, 'assets/minecraft/blockstates', name + '.json'), payload)
 

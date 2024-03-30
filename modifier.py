@@ -8,13 +8,6 @@ def overworld_ore(ctx: common.McContext, name: str, color: str, deepslate_color:
     drawer.border_block_texture(ctx, name, color)
     drawer.border_block_texture(ctx, 'deepslate_' + name, deepslate_color)
 
-g_ColorfulBorderBlockTextureMeta: typing.Any = {"animation": {"frametime": 5, "interpolate": True}}
-def colorful_border(ctx: common.McContext, name: str) -> None:
-    # draw texture
-    drawer.colorful_border_block_texture(ctx, name)
-    # create animation meta file
-    ctx.write_texture_meta(name, g_ColorfulBorderBlockTextureMeta)
-
 def redstone_door(ctx: common.McContext, name: str) -> None:
     # create texture
     drawer.border_door_block_texture(ctx, name)

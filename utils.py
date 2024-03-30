@@ -27,8 +27,8 @@ def proc_ore(ctx: common.McContext) -> None:
     drawer.border_block_texture(ctx, 'nether_gold_ore', '#fcee4b')
     drawer.border_block_texture(ctx, 'nether_quartz_ore', '#d4caba')
     # nether ancient debris need colorful border
-    modifier.colorful_border(ctx, 'ancient_debris_side')
-    modifier.colorful_border(ctx, 'ancient_debris_top')
+    drawer.colorful_border_block_texture(ctx, 'ancient_debris_side')
+    drawer.colorful_border_block_texture(ctx, 'ancient_debris_top')
     # raw ore block
     drawer.border_block_texture(ctx, 'raw_copper_block', '#a65947')
     drawer.border_block_texture(ctx, 'raw_gold_block', '#fcee4b')
