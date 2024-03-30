@@ -4,6 +4,7 @@ import argparse
 def build_res_pack(ctx: common.McContext) -> None:
     utils.proc_ore(ctx)
     utils.proc_redstone(ctx)
+    utils.proc_common(ctx)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
