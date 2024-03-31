@@ -69,3 +69,7 @@ def proc_common(ctx: common.McContext) -> None:
     call_with_check(ctx, 'bamboo', ('#5a6627', '#505c23', '#615526', '#615526', '#615526'))
     call_with_check(ctx, 'crimson', ('#7b0000', '#442131', '#6a2640', None, '#3f1e2d'))
     call_with_check(ctx, 'warped', ('#16615b', '#442131', '#2e8578', None, '#113835'))
+
+    # tree leaves
+    # prepare leaves first
+    modifier.prepare_tree_leaves(ctx)

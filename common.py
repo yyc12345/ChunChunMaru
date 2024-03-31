@@ -88,6 +88,9 @@ def save_json(json_path: str, payload: typing.Any) -> None:
 
 g_HexColorRegex: re.Pattern = re.compile(r'^#[0-9a-f]{6}$')
 def resolve_hex_color(hex_color: str) -> tuple[int, int, int]:
+    """
+    hex color format: '#rrggbb'
+    """
     hex_color = hex_color.lower()
 
     if g_HexColorRegex.match(hex_color) is None:
@@ -96,4 +99,21 @@ def resolve_hex_color(hex_color: str) -> tuple[int, int, int]:
         int(hex_color[1:3], base=16),
         int(hex_color[3:5], base=16),
         int(hex_color[5:7], base=16),
+    )
+
+g_HexAlphaColorRegex: re.Pattern = re.compile(r'^#[0-9a-f]{8}$')
+def resolve_hex_alpha_color(hex_color: str) -> tuple[int, int, int, int]:
+    """
+    hex color format: '#rrggbbaa'
+    for alpha, 0x00 means full transparent, 0xff means opaque.
+    """
+    hex_color = hex_color.lower()
+
+    if g_HexAlphaColorRegex.match(hex_color) is None:
+        raise Exception('invalid hex alpha color string')
+    return (
+        int(hex_color[1:3], base=16),
+        int(hex_color[3:5], base=16),
+        int(hex_color[5:7], base=16),
+        int(hex_color[7:9], base=16),
     )

@@ -1,5 +1,5 @@
 import common
-import PIL, PIL.Image, PIL.ImageDraw
+import PIL, PIL.Image, PIL.ImageDraw, PIL.ImageFont
 import typing
 
 def _check_size(img: PIL.Image.Image, expected_size: tuple[int, int]) -> None:
@@ -7,14 +7,23 @@ def _check_size(img: PIL.Image.Image, expected_size: tuple[int, int]) -> None:
     if not (x == expected_size[0] and y == expected_size[1]):
         raise Exception('assert minecraft texture size failed')
 
+def _check_animation_size(img: PIL.Image.Image, unit_size: tuple[int, int]) -> int:
+    (x, y) = img.size
+    # check width
+    if x != unit_size[0]:
+        raise Exception('assert minecraft texture size failed')
+    # check height and return frame count
+    frame_count: int = y // unit_size[1]
+    if frame_count < 1 or y % unit_size[1] != 0:
+        raise Exception('assert minecraft texture size failed')
+    return frame_count
+
 def border_block_texture(ctx: common.McContext, name: str, color: str) -> None:
     # read image
     img: PIL.Image.Image = ctx.read_texture(name)
     # if this image have animation, its height must be multiple times of 16.
     # we check width and compute animation frames count
-    (x, y) = img.size
-    count: int = y // 16
-    if x != 16 or y % 16 != 0 or count == 0: raise Exception('assert minecraft texture size failed')
+    count: int = _check_animation_size(img, (16, 16))
     # create sketchpad and draw
     sketchpad = PIL.ImageDraw.Draw(img)
     # draw rectangle for each frames
@@ -85,3 +94,47 @@ def border_door_block_texture(ctx: common.McContext, name: str) -> None:
         )
         # save it as new file
         ctx.write_texture(door_part + '_open', img)
+
+g_FontName: str = 'Minecraft.ttf'
+def generate_leaves_level(ctx: common.McContext) -> None:
+    # create font
+    font = PIL.ImageFont.truetype(g_FontName, 14)
+
+    # create 7 levels leaves
+    for i in range(7):
+        # adjust it to 1 based
+        i += 1
+        # create empty image and sketchpad
+        img: PIL.Image.Image = PIL.Image.new('RGBA', (32, 32), common.resolve_hex_alpha_color('#00000000'))
+        sketchpad: PIL.ImageDraw.ImageDraw = PIL.ImageDraw.Draw(img)
+        # draw text at center
+        sketchpad.text(
+            (17, 13), 
+            text=str(i),
+            fill=common.resolve_hex_color('#ffffff'),
+            font=font,
+            anchor='mm',
+            stroke_width=1,
+            stroke_fill=common.resolve_hex_color('#475e2f')
+        )
+        # save it
+        ctx.write_texture(f'leaves_level_{i}', img)
+
+def generate_leaves_persistent(ctx: common.McContext) -> None:
+    # create persistent marker
+    for is_persistent in (True, False):
+        # create empty image and sketchpad
+        img: PIL.Image.Image = PIL.Image.new('RGBA', (32, 32), common.resolve_hex_alpha_color('#00000000'))
+        sketchpad = PIL.ImageDraw.Draw(img)
+        # draw rectangle
+        sketchpad.rectangle(
+            (8, 21, 23, 23),
+            fill=common.resolve_hex_color('#1e90ff' if is_persistent else '#ffffff'),
+            outline=common.resolve_hex_color('#475e2f'),
+            width=1
+        )
+        # save it
+        ctx.write_texture(f'leaves_persistent_{"on" if is_persistent else "off"}', img)
+
+def generate_redstone_dust_level(ctx: common.McContext) -> None:
+    pass

@@ -54,3 +54,14 @@ def tree_block(ctx: common.McContext, name: str, color_tuple: TreeBlockColors_t,
     # planks
     if color_tuple[4] is not None:
         drawer.border_block_texture(ctx, f'{name}_planks', color_tuple[4])
+
+def prepare_tree_leaves(ctx: common.McContext) -> None:
+    # generate 2 leaves overlay
+    drawer.generate_leaves_level(ctx)
+    drawer.generate_leaves_persistent(ctx)
+
+    # generate leaves overlay used models
+    # todo...
+
+def tree_leaves(ctx: common.McContext, name: str) -> None:
+    pass
