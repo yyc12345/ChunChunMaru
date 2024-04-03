@@ -47,10 +47,9 @@ def proc_redstone(ctx: common.McContext) -> None:
         modifier.redstone_door(ctx, door_type + '_door')
 
 def proc_common(ctx: common.McContext) -> None:
-    # border all wood block
-    # log (+-stripped) (原木)
-    # wood (+-stripped) (木头) use the same texture with log so no need to process it
-    # planks (木板)
+    # tree blocks
+    # add border for log (原木), stripped_log (去皮原木), wood (木头), stripped_wood (去皮木头), planks (木板)
+    # because wood use the same texture with log, so these proc can be merged.
     # color_tuple = tuple(log_color, log_top_color, stripped_log_color, stripped_log_top_color, planks_color)
     modifier.tree_block(ctx, 'oak', ('#382b18', None, '#846a3a', None, '#67502c'), modifier.TreeType.Overworld)
     modifier.tree_block(ctx, 'spruce', ('#553a1f', None, '#544525', None, '#553a1f'), modifier.TreeType.Overworld)
@@ -108,14 +107,24 @@ def proc_common(ctx: common.McContext) -> None:
     drawer.border_block_texture(ctx, 'calcite', '#b3b3b3')
     # obsidian
     drawer.border_block_texture(ctx, 'obsidian', '#3b2754')
+
     # ice, packed ice, blue ice, snow
+    # 3 types ice
     drawer.border_block_texture(ctx, 'ice', '#7daafb')
     drawer.border_block_texture(ctx, 'packed_ice', '#6794e8')
     drawer.border_block_texture(ctx, 'blue_ice', '#4c8ffb')
+    # the ice created by enchantment frozen walker (4 levels)
+    for i in range(4):
+        drawer.border_block_texture(ctx, f'frosted_ice_{i}', '#7dabfa')
+    # snow & snow block
     drawer.border_block_texture(ctx, 'snow', '#b5e1e1')
+    # powder snow (细雪)
+    # it need to add specific pattern
+    drawer.snowflake_overlay_block_texture(ctx, 'powder_snow')
+
     # moss, azalea
     drawer.border_block_texture(ctx, 'moss_block', '#384926')
-    drawer.border_block_texture(ctx, 'azalea_top', '#384926')
+    drawer.border_block_texture(ctx, 'azalea_top', '#50692c')
     
 
 

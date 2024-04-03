@@ -1,6 +1,6 @@
 import common
 import PIL, PIL.Image, PIL.ImageDraw, PIL.ImageFont
-import typing
+import typing, math
 
 def _check_size(img: PIL.Image.Image, expected_size: tuple[int, int]) -> None:
     (x, y) = img.size
@@ -44,6 +44,9 @@ def border_block_texture(ctx: common.McContext, name: str, color: str) -> None:
 
 g_ColorfulBorderBlockTextureMeta: typing.Any = {"animation": {"frametime": 5, "interpolate": True}}
 def colorful_border_block_texture(ctx: common.McContext, name: str) -> None:
+    """
+    Add a shiny animated border for block. Usually used by ancient debris.
+    """
     # read image and check size
     example: PIL.Image.Image = ctx.read_texture(name)
     _check_size(example, (16, 16))
@@ -70,6 +73,31 @@ def colorful_border_block_texture(ctx: common.McContext, name: str) -> None:
 
     # create animation meta file
     ctx.write_texture_meta(name, g_ColorfulBorderBlockTextureMeta)
+
+def snowflake_overlay_block_texture(ctx: common.McContext, name: str) -> None:
+    """
+    Add a snowflake pattern at the center of block. Usually used by powder snow.
+    """
+    # read image and check size
+    img: PIL.Image.Image = ctx.read_texture(name)
+    _check_size(img, (16, 16))
+    # create sketchpad and draw snowflake
+    sketchpad = PIL.ImageDraw.Draw(img)
+    parts: int = 4
+    radius: float = 4
+    for i in range(parts):
+        degree: float = math.radians(180.0 / parts * i)
+        x1: float = math.cos(degree) * radius
+        y1: float = math.sin(degree) * radius
+        sketchpad.line(
+            ((round(8 + x1), round(8 - y1)), (round(8 - x1), round(8 + y1))),
+            fill=common.resolve_hex_color('#beddef'),
+            width=1,
+            joint=None
+        )
+
+    # save it
+    ctx.write_texture(name, img)
 
 def border_door_block_texture(ctx: common.McContext, name: str) -> None:
     # proc top and bottom respectively
