@@ -1,7 +1,15 @@
+'''
+The module providing common functions and classes used by other modules
+'''
+
 import PIL, PIL.Image
 import json, re, os, typing
 
 class McContext():
+    __cBlockstatePath: typing.ClassVar[str] = 'assets/minecraft/blockstates'
+    __cModelPath: typing.ClassVar[str] = 'assets/minecraft/models/block'
+    __cTexturePath: typing.ClassVar[str] = 'assets/minecraft/textures/block'
+
     __mSrcPath: str
     __mDstPath: str
     __mVer: int
@@ -19,14 +27,14 @@ class McContext():
         self.__deploy_res_pack_info()
 
     def __validate_src_path(self) -> None:
-        assert(os.path.isdir(os.path.join(self.__mSrcPath, 'assets/minecraft/blockstates')))
-        assert(os.path.isdir(os.path.join(self.__mSrcPath, 'assets/minecraft/models/block')))
-        assert(os.path.isdir(os.path.join(self.__mSrcPath, 'assets/minecraft/textures/block')))
+        assert(os.path.isdir(os.path.join(self.__mSrcPath, self.__cBlockstatePath)))
+        assert(os.path.isdir(os.path.join(self.__mSrcPath, self.__cModelPath)))
+        assert(os.path.isdir(os.path.join(self.__mSrcPath, self.__cTexturePath)))
 
     def __layout_dst_path(self) -> None:
-        os.makedirs(os.path.join(self.__mDstPath, 'assets/minecraft/blockstates'), exist_ok=True)
-        os.makedirs(os.path.join(self.__mDstPath, 'assets/minecraft/models/block'), exist_ok=True)
-        os.makedirs(os.path.join(self.__mDstPath, 'assets/minecraft/textures/block'), exist_ok=True)
+        os.makedirs(os.path.join(self.__mDstPath, self.__cBlockstatePath), exist_ok=True)
+        os.makedirs(os.path.join(self.__mDstPath, self.__cModelPath), exist_ok=True)
+        os.makedirs(os.path.join(self.__mDstPath, self.__cTexturePath), exist_ok=True)
 
     def __deploy_res_pack_info(self) -> None:
         # write package info
@@ -39,44 +47,143 @@ class McContext():
         save_json(os.path.join(self.__mDstPath, 'pack.mcmeta'), payload)
 
         # set package icon
-
+        # todo...
 
     def get_mc_ver(self) -> int:
         return self.__mVer
 
-    def get_src_custom(self, path: str) -> str:
-        return os.path.join(self.__mSrcPath, 'assets/minecraft', path)
+    def get_src_path(self, *args: str) -> str:
+        return os.path.join(self.__mSrcPath, *args)
 
-    def get_dst_custom(self, path: str) -> str:
-        return os.path.join(self.__mDstPath, 'assets/minecraft', path)
+    def get_dst_path(self, *args: str) -> str:
+        return os.path.join(self.__mDstPath, *args)
 
 
     def read_blockstate(self, name: str) -> typing.Any:
-        return load_json(os.path.join(self.__mSrcPath, 'assets/minecraft/blockstates', name + '.json'))
+        return load_json(self.get_src_path(self.__cBlockstatePath, name + '.json'))
 
     def read_model(self, name: str) -> typing.Any:
-        return load_json(os.path.join(self.__mSrcPath, 'assets/minecraft/models/block', name + '.json'))
+        return load_json(self.get_src_path(self.__cModelPath, name + '.json'))
 
     def read_texture(self, name: str) -> PIL.Image.Image:
-        path: str = os.path.join(self.__mSrcPath, 'assets/minecraft/textures/block', name + '.png')
-        return PIL.Image.open(path)
+        return PIL.Image.open(self.get_src_path(self.__cTexturePath, name + '.png'))
 
     def read_texture_meta(self, name: str) -> typing.Any:
-        return load_json(os.path.join(self.__mSrcPath, 'assets/minecraft/textures/block', name + '.png.mcmeta'))
+        return load_json(self.get_src_path(self.__cTexturePath, name + '.png.mcmeta'))
+
 
     def write_blockstate(self, name: str, payload: typing.Any) -> None:
-        save_json(os.path.join(self.__mDstPath, 'assets/minecraft/blockstates', name + '.json'), payload)
+        save_json(self.get_dst_path(self.__cBlockstatePath, name + '.json'), payload)
 
     def write_model(self, name: str, payload: typing.Any) -> None:
-        save_json(os.path.join(self.__mDstPath, 'assets/minecraft/models/block', name + '.json'), payload)
+        save_json(self.get_dst_path(self.__cModelPath, name + '.json'), payload)
 
     def write_texture(self, name: str, img: PIL.Image.Image) -> None:
-        path: str = os.path.join(self.__mDstPath, 'assets/minecraft/textures/block', name + '.png')
-        img.save(path)
+        img.save(self.get_dst_path(self.__cTexturePath, name + '.png'))
 
     def write_texture_meta(self, name: str, payload: typing.Any) -> None:
-        save_json(os.path.join(self.__mDstPath, 'assets/minecraft/textures/block', name + '.png.mcmeta'), payload)
+        save_json(self.get_dst_path(self.__cTexturePath, name + '.png.mcmeta'), payload)
 
+class ImgContext():
+    __mCtx: McContext
+    __mOutputName: str | None
+    __mIsValid: bool
+
+    __mImg: PIL.Image.Image
+    __mImgMeta: typing.Any | None
+
+    def __init__(self, ctx: McContext, img: PIL.Image.Image, img_meta: typing.Any | None, output_img_name: str | None) -> None:
+        """
+        Do no call this function directly.
+        You should get instance by calling class methods
+        """
+        self.__mCtx = ctx
+        self.__mOutputName = output_img_name
+
+        self.__mImg = img
+        self.__mImgMeta = img_meta
+
+        self.__mIsValid = True
+
+    @classmethod
+    def from_empty(cls, ctx: McContext, size: tuple[int, int], output_img_name: str | None):
+        # create image
+        img = PIL.Image.new('RGBA', size, resolve_hex_alpha_color('#00000000'))
+        # return instance
+        return cls(ctx, img, None, output_img_name)
+
+    @classmethod
+    def from_existing(cls, ctx: McContext, input_img_name: str, output_img_name: str | None):
+        # load image
+        img = ctx.read_texture(input_img_name)
+        # try loading image meta
+        try: img_meta = ctx.read_texture_meta(input_img_name)
+        except: img_meta = None
+        # return instance
+        return cls(ctx, img, img_meta, output_img_name)
+
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.dispose()
+    
+    def dispose(self) -> None:
+        if self.__mIsValid:
+            # if need to save image, save it
+            if self.__mOutputName is not None:
+                # save image
+                self.__mCtx.write_texture(self.__mOutputName, self.__mImg)
+                # save image meta if existing
+                if self.__mImgMeta is not None:
+                    self.__mCtx.write_texture_meta(self.__mOutputName, self.__mImgMeta)
+
+            # free image
+            self.__mImg.close()
+            # mark as invalid
+            self.__mIsValid = False
+
+    def __check_validation(self) -> None:
+        if not self.__mIsValid:
+            raise Exception('call a invalid ImgContext')
+
+    def get_image(self) -> PIL.Image.Image:
+        """
+        Return the **reference** to loaded image.
+
+        Please note that you can not replace image located in this class
+        because this class will free it in future.
+        If you really want to replace it with a new image, you should resize, clear it and 
+        paste your image in this instance, rather than directly replace it.
+        """
+        self.__check_validation()
+        return self.__mImg
+    
+    def get_image_meta(self) -> typing.Any | None:
+        """
+        Return the **reference** to the loaded image meta data.
+        If no meta data, this function will return None.
+        
+        Please note that this image returns is reference.
+        It means that it will return a reference to meta dict if existing.
+        All operations (update, clear and etc) on return value will be 
+        directly reflected in the instance holded by this context.
+        """
+        self.__check_validation()
+        return self.__mImgMeta
+    
+    def set_image_meta(self, data: typing.Any | None) -> None:
+        """
+        Set image meta data for this context as the reference.
+        Or you can set None to remove existing meta.
+
+        Please note that your passed data is by reference.
+        It means that you should not change it after calling this method
+        until this context is disposed. Otherwise the written image meta
+        will not be same one when you calling this method.
+        """
+        self.__check_validation()
+        self.__mImgMeta = data
 
 def load_json(json_path: str) -> typing.Any:
     with open(json_path, 'r', encoding='utf-8') as fs:

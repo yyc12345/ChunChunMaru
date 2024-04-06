@@ -1,16 +1,42 @@
 import common, drawer
 import typing, enum
 
-def overworld_ore(ctx: common.McContext, name: str, color: str, deepslate_color: str | None = None) -> None:
+#region Drawer Wrapper
+
+def border_block(ctx: common.McContext, name: str, color: str) -> None:
+    with common.ImgContext.from_existing(ctx, name, name) as imgctx:
+        drawer.border(imgctx, color)
+
+def colorful_border_block(ctx: common.McContext, name: str) -> None:
+    with common.ImgContext.from_existing(ctx, name, None) as refctx:
+        with common.ImgContext.from_empty(ctx, (16, 16), name) as imgctx:
+            drawer.colorful_border(imgctx, refctx)
+
+def snowflake_overlay_block(ctx: common.McContext, name: str) -> None:
+    with common.ImgContext.from_existing(ctx, name, name) as imgctx:
+        drawer.snowflake_overlay(imgctx)
+
+def grass_border_block(ctx: common.McContext, name: str,
+                left_height: int, right_height: int,
+                top_color: str | None, bottom_color: str | None,
+                is_dirt_path: bool) -> None:
+    with common.ImgContext.from_existing(ctx, name, name) as imgctx:
+        drawer.grass_border(imgctx, left_height, right_height, top_color, bottom_color, is_dirt_path)
+
+#endregion
+
+def common_ore(ctx: common.McContext, name: str, color: str, deepslate_color: str | None = None) -> None:
     if deepslate_color is None:
         deepslate_color = color
 
-    drawer.border_block_texture(ctx, name, color)
-    drawer.border_block_texture(ctx, 'deepslate_' + name, deepslate_color)
+    border_block(ctx, name, color)
+    border_block(ctx, f'deepslate_{name}', deepslate_color)
 
-def redstone_door(ctx: common.McContext, name: str) -> None:
+def door(ctx: common.McContext, name: str) -> None:
     # create texture
-    drawer.border_door_block_texture(ctx, name)
+    with common.ImgContext.from_existing(ctx, f'{name}_top', f'{name}_top_open') as imgtop:
+        with common.ImgContext.from_existing(ctx, f'{name}_bottom', f'{name}_bottom_open') as imgbottom:
+            drawer.door_border(imgtop, imgbottom)
 
     # change open door model
     # no need to modify blockstate
@@ -31,7 +57,7 @@ class TreeType(enum.Enum):
     Overworld = 'log'
     Nether = 'stem'
     Bamboo = 'block'
-def tree_block(ctx: common.McContext, tree_name: str, color_tuple: TreeBlockColors_t, tree_type: TreeType) -> None:
+def tree(ctx: common.McContext, tree_name: str, color_tuple: TreeBlockColors_t, tree_type: TreeType) -> None:
     """
     color_tuple = tuple(log_color, log_top_color, stripped_log_color, stripped_log_top_color, planks_color), 
     None if this log do not need process.
@@ -41,24 +67,30 @@ def tree_block(ctx: common.McContext, tree_name: str, color_tuple: TreeBlockColo
 
     # log
     if color_tuple[0] is not None:
-        drawer.border_block_texture(ctx, f'{tree_name}_{tree_tail}', color_tuple[0])
+        border_block(ctx, f'{tree_name}_{tree_tail}', color_tuple[0])
     # log top
     if color_tuple[1] is not None:
-        drawer.border_block_texture(ctx, f'{tree_name}_{tree_tail}_top', color_tuple[1])
+        border_block(ctx, f'{tree_name}_{tree_tail}_top', color_tuple[1])
     # stripped log
     if color_tuple[2] is not None:
-        drawer.border_block_texture(ctx, f'stripped_{tree_name}_{tree_tail}', color_tuple[2])
+        border_block(ctx, f'stripped_{tree_name}_{tree_tail}', color_tuple[2])
     # stripped log top
     if color_tuple[3] is not None:
-        drawer.border_block_texture(ctx, f'stripped_{tree_name}_{tree_tail}_top', color_tuple[3])
+        border_block(ctx, f'stripped_{tree_name}_{tree_tail}_top', color_tuple[3])
     # planks
     if color_tuple[4] is not None:
-        drawer.border_block_texture(ctx, f'{tree_name}_planks', color_tuple[4])
+        border_block(ctx, f'{tree_name}_planks', color_tuple[4])
 
 def prepare_tree_leaves(ctx: common.McContext) -> None:
     # generate 2 leaves overlay
-    drawer.generate_leaves_level(ctx)
-    drawer.generate_leaves_persistent(ctx)
+    # create leaves level with 7 different level
+    for i in range(1, 8, 1):
+        with common.ImgContext.from_empty(ctx, (32, 32), f'leaves_level_{i}') as imgctx:
+            drawer.leaves_level(imgctx, i)
+    # create leaves persistent
+    for is_persistent in (True, False):
+        with common.ImgContext.from_empty(ctx, (32, 32), f'leaves_persistent_{"on" if is_persistent else "off"}') as imgctx:
+            drawer.leaves_persistent(imgctx, is_persistent)
 
     # generate general leaves overlay models
     # every single levaes level should inherit this model
@@ -114,9 +146,7 @@ def prepare_tree_leaves(ctx: common.McContext) -> None:
     ctx.write_model('leaves_persistent', payload)
 
     # write 1-7 tree levels model
-    for i in range(7):
-        # adjust to 1 based
-        i += 1
+    for i in range(1, 8, 1):
         payload = {
             "parent": "minecraft:block/leaves_level",
             "textures": {
@@ -176,4 +206,4 @@ def tree_leaves(ctx: common.McContext, tree_name: str, color: str | None) -> Non
     # so no need to change model
     # adding border for tree texture is enough
     if color is not None:
-        drawer.border_block_texture(ctx, name, color)
+        border_block(ctx, name, color)

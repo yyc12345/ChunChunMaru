@@ -18,6 +18,12 @@ This resource pack generator is for my tastes. I am a redstone player, not a bui
 
 This resource pack has:
 
+### Overworld Blocks
+
+* Snow-like blocks
+  - Add border for ice, packed ice, blue ice, frozed ice, snow, snow block.
+  - Add sigificant snowflake pattern for powder snow.
+
 ### Marked Block
 
 * Slight border for common used blocks which also easily be confused when counting, such as cobblestone, bamboo block series and etc.
@@ -50,6 +56,7 @@ This resource pack has:
 
 * Python (Python 3.10 suggested)
 * PIL package
+* Minecraft font (may need to be downloaded from other sites)
 
 ## Usage
 

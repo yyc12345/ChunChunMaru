@@ -1,6 +1,13 @@
+'''
+The module focus on texture drawing (modification)
+'''
+
 import common
 import PIL, PIL.Image, PIL.ImageDraw, PIL.ImageFont
 import typing, math
+
+def _check_range(v, vmin, vmax) -> bool:
+    return v <= vmax and v >= vmin and vmax >= vmin
 
 def _check_size(img: PIL.Image.Image, expected_size: tuple[int, int]) -> None:
     (x, y) = img.size
@@ -18,9 +25,14 @@ def _check_animation_size(img: PIL.Image.Image, unit_size: tuple[int, int]) -> i
         raise Exception('assert minecraft texture size failed')
     return frame_count
 
-def border_block_texture(ctx: common.McContext, name: str, color: str) -> None:
-    # read image
-    img: PIL.Image.Image = ctx.read_texture(name)
+def border(ctx: common.ImgContext, color: str) -> None:
+    """
+    Add border for given image. The most simple and widely used drawer in this module.
+    
+    This function can accept animation texture.
+    """
+    # get image
+    img: PIL.Image.Image = ctx.get_image()
     # if this image have animation, its height must be multiple times of 16.
     # we check width and compute animation frames count
     count: int = _check_animation_size(img, (16, 16))
@@ -34,26 +46,21 @@ def border_block_texture(ctx: common.McContext, name: str, color: str) -> None:
             outline=common.resolve_hex_color(color),
             width=1
         )
-    # save result
-    ctx.write_texture(name, img)
 
-    # if count is not zero, we should copy its animation data
-    if count > 1:
-        meta: typing.Any = ctx.read_texture_meta(name)
-        ctx.write_texture_meta(name, meta)
-
-g_ColorfulBorderBlockTextureMeta: typing.Any = {"animation": {"frametime": 5, "interpolate": True}}
-def colorful_border_block_texture(ctx: common.McContext, name: str) -> None:
+def colorful_border(ctx: common.ImgContext, ref_ctx: common.ImgContext) -> None:
     """
     Add a shiny animated border for block. Usually used by ancient debris.
     """
-    # read image and check size
-    example: PIL.Image.Image = ctx.read_texture(name)
-    _check_size(example, (16, 16))
+    # check reference image size
+    ref_img: PIL.Image.Image = ref_ctx.get_image()
+    _check_size(ref_img, (16, 16))
     # create a new image and paste example double
-    img: PIL.Image.Image = PIL.Image.new(example.mode, (16, 32))
-    img.paste(example, (0, 0))
-    img.paste(example, (0, 16))
+    # get image and resize to new size
+    img: PIL.Image.Image = ctx.get_image()
+    img.resize((16, 16 * 2))
+    # paste ref image
+    img.paste(ref_img, (0, 0))
+    img.paste(ref_img, (0, 16))
     # create sketchpad and write boundary
     sketchpad = PIL.ImageDraw.Draw(img)
     sketchpad.rectangle(
@@ -68,18 +75,16 @@ def colorful_border_block_texture(ctx: common.McContext, name: str) -> None:
         outline=common.resolve_hex_color('#00ffc6'),
         width=1
     )
-    # save it
-    ctx.write_texture(name, img)
 
-    # create animation meta file
-    ctx.write_texture_meta(name, g_ColorfulBorderBlockTextureMeta)
+    # change animation data forcely
+    ctx.set_image_meta({"animation": {"frametime": 5, "interpolate": True}})
 
-def snowflake_overlay_block_texture(ctx: common.McContext, name: str) -> None:
+def snowflake_overlay(ctx: common.ImgContext) -> None:
     """
     Add a snowflake pattern at the center of block. Usually used by powder snow.
     """
     # read image and check size
-    img: PIL.Image.Image = ctx.read_texture(name)
+    img: PIL.Image.Image = ctx.get_image()
     _check_size(img, (16, 16))
     # create sketchpad and draw snowflake
     sketchpad = PIL.ImageDraw.Draw(img)
@@ -96,73 +101,99 @@ def snowflake_overlay_block_texture(ctx: common.McContext, name: str) -> None:
             joint=None
         )
 
-    # save it
-    ctx.write_texture(name, img)
+def grass_border(ctx: common.ImgContext, 
+                 left_height: int, right_height: int,
+                 top_color: str | None, bottom_color: str | None,
+                 is_dirt_path: bool) -> None:
+    """
+    Add border for grass block side like texture. Its border is consisted by 2 individual parts and need to be filled by different color.
 
-def border_door_block_texture(ctx: common.McContext, name: str) -> None:
-    # proc top and bottom respectively
-    for is_top in (True, False):
-        # load images
-        door_part: str = name + ('_top' if is_top else '_bottom')
-        img: PIL.Image.Image = ctx.read_texture(door_part)
-        _check_size(img, (16, 16))
-        # decide drawing lines coord point first
-        route: tuple[tuple[int, int], ...]
-        if is_top:
-            route = ((1, 14), (1, 1), (14, 1), (14, 14))
-        else:
-            route = ((1, 1), (1, 14), (14, 14), (14, 1))
-        # create sketchpad and draw left and right ring first
-        sketchpad = PIL.ImageDraw.Draw(img)
+    If color is None, it means that corresponding border do not need to be drawn.
+
+    If it is dirt path, a extra offset will be added because the top of dirt path texture is blank.
+    """
+    # read image and check size
+    img: PIL.Image.Image = ctx.get_image()
+    _check_size(img, (16, 16))
+    # create sketchpad and draw
+    sketchpad = PIL.ImageDraw.Draw(img)
+    top_offset: int = 1 if is_dirt_path else 0
+    # draw border
+    if top_color is not None:
         sketchpad.line(
-            route,
-            fill=common.resolve_hex_color('#df0906'),
+            ((0, left_height), (0, top_offset), (15, top_offset), (15, right_height)),
+            fill=common.resolve_hex_color(top_color),
             width=1,
             joint=None
         )
-        # save it as new file
-        ctx.write_texture(door_part + '_open', img)
+    if bottom_color is not None:
+        sketchpad.line(
+            ((0, left_height + 1), (0, 15), (15, 15), (15, right_height + 1)),
+            fill=common.resolve_hex_color(bottom_color),
+            width=1,
+            joint=None
+        )
+
+def door_border(top_ctx: common.ImgContext, bottom_ctx: common.ImgContext) -> None:
+    img: PIL.Image.Image
+
+    # proc top and bottom respectively
+    # create sketchpad and draw left and right ring first
+    # top
+    img = top_ctx.get_image()
+    _check_size(img, (16, 16))
+    sketchpad = PIL.ImageDraw.Draw(img)
+    sketchpad.line(
+        ((1, 14), (1, 1), (14, 1), (14, 14)),
+        fill=common.resolve_hex_color('#df0906'),
+        width=1,
+        joint=None
+    )
+    # bottom
+    img = bottom_ctx.get_image()
+    _check_size(img, (16, 16))
+    sketchpad = PIL.ImageDraw.Draw(img)
+    sketchpad.line(
+        ((1, 1), (1, 14), (14, 14), (14, 1)),
+        fill=common.resolve_hex_color('#df0906'),
+        width=1,
+        joint=None
+    )
 
 g_FontName: str = 'Minecraft.ttf'
-def generate_leaves_level(ctx: common.McContext) -> None:
+def leaves_level(ctx: common.ImgContext, level: int) -> None:
+    # get image and check size
+    img: PIL.Image.Image = ctx.get_image()
+    _check_size(img, (32, 32))
+    # check level range
+    _check_range(level, 1, 7)
+
     # create font
     font = PIL.ImageFont.truetype(g_FontName, 14)
+    # draw text at center
+    sketchpad: PIL.ImageDraw.ImageDraw = PIL.ImageDraw.Draw(img)
+    sketchpad.text(
+        (17, 13),
+        text=str(level),
+        fill=common.resolve_hex_color('#ffffff'),
+        font=font,
+        anchor='mm',
+        stroke_width=1,
+        stroke_fill=common.resolve_hex_color('#475e2f')
+    )
 
-    # create 7 levels leaves
-    for i in range(7):
-        # adjust it to 1 based
-        i += 1
-        # create empty image and sketchpad
-        img: PIL.Image.Image = PIL.Image.new('RGBA', (32, 32), common.resolve_hex_alpha_color('#00000000'))
-        sketchpad: PIL.ImageDraw.ImageDraw = PIL.ImageDraw.Draw(img)
-        # draw text at center
-        sketchpad.text(
-            (17, 13), 
-            text=str(i),
-            fill=common.resolve_hex_color('#ffffff'),
-            font=font,
-            anchor='mm',
-            stroke_width=1,
-            stroke_fill=common.resolve_hex_color('#475e2f')
-        )
-        # save it
-        ctx.write_texture(f'leaves_level_{i}', img)
+def leaves_persistent(ctx: common.ImgContext, is_persistent: bool) -> None:
+    # get image and check size
+    img: PIL.Image.Image = ctx.get_image()
+    _check_size(img, (32, 32))
+    # draw rectangle
+    sketchpad = PIL.ImageDraw.Draw(img)
+    sketchpad.rectangle(
+        (8, 21, 23, 23),
+        fill=common.resolve_hex_color('#1e90ff' if is_persistent else '#ffffff'),
+        outline=common.resolve_hex_color('#475e2f'),
+        width=1
+    )
 
-def generate_leaves_persistent(ctx: common.McContext) -> None:
-    # create persistent marker
-    for is_persistent in (True, False):
-        # create empty image and sketchpad
-        img: PIL.Image.Image = PIL.Image.new('RGBA', (32, 32), common.resolve_hex_alpha_color('#00000000'))
-        sketchpad = PIL.ImageDraw.Draw(img)
-        # draw rectangle
-        sketchpad.rectangle(
-            (8, 21, 23, 23),
-            fill=common.resolve_hex_color('#1e90ff' if is_persistent else '#ffffff'),
-            outline=common.resolve_hex_color('#475e2f'),
-            width=1
-        )
-        # save it
-        ctx.write_texture(f'leaves_persistent_{"on" if is_persistent else "off"}', img)
-
-def generate_redstone_dust_level(ctx: common.McContext) -> None:
+def redstone_dust_level(ctx: common.McContext) -> None:
     pass
