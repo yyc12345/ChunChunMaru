@@ -18,8 +18,39 @@ This resource pack generator is for my tastes. I am a redstone player, not a bui
 
 This resource pack has:
 
+### Ore Blocks
+
+* Ore
+  - Add significant border for coal ore, copper ore, diamond ore, emerald ore, gold ore, iron ore, lapis ore, redstone ore (including their deepslate variants).
+* Nether ore
+  - Add significant border for gilded blackstone, nether gold ore, nether quartz ore.
+  - Add VERY significant, animated shiny border for ancient debris.
+* Raw ore blocks
+  - Add significant border for raw copper block, raw gold block, raw iron block (they may appear in vein).
+* Mineral blocks
+  - Add border for coal block (other mineral blocks already have border).
+* Amethyst
+  - Add border for amethyst block.
+  - Add warning border for budding amethyst (to tell player do not break it).
+
+### Tree Blocks
+
+* Add border for 
+
 ### Overworld Blocks
 
+* Stone-like blocks
+  - Add border for stone variants: diorite, andesite, granite, tuff, calcite.
+* Dirt-like blocks
+  - Add border for dirt, grass block, mycelium, podzol, dirt path, clay.
+  - Add significant border for coarse dirt.
+* Mud-like blocks
+  - Add border for mud, muddy mangrove roots, packed mud.
+* Sand-like blocks
+  - Add border for sand, sandstone (all variants), red sand, red sandstone (all variants), gravel.
+  - Add significant border for suspicious sand, suspicious gravel.
+* Obsidian0like blocks
+  - Add border for obsidian, crying obsidian.
 * Snow-like blocks
   - Add border for ice, packed ice, blue ice, frozed ice, snow, snow block.
   - Add sigificant snowflake pattern for powder snow.

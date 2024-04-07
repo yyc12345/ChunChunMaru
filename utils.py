@@ -30,7 +30,7 @@ def proc_ore(ctx: common.McContext) -> None:
     # ore block
     # only coal block need border, other blocks is easy to distinguish
     modifier.border_block(ctx, 'coal_block', '#292727')
-    # amethyst
+    # amethyst (紫水晶)
     modifier.border_block(ctx, 'amethyst_block', '#5d3a9a')
     modifier.border_block(ctx, 'budding_amethyst', '#be8e59')
 
@@ -46,15 +46,15 @@ def proc_redstone(ctx: common.McContext) -> None:
     for door_type in door_types:
         modifier.door(ctx, door_type + '_door')
 
-def proc_common(ctx: common.McContext) -> None:
+def proc_tree(ctx: common.McContext) -> None:
     # ===== tree blocks =====
     # add border for log (原木), stripped_log (去皮原木), wood (木头), stripped_wood (去皮木头), planks (木板)
     # because wood use the same texture with log, so these proc can be merged.
     # color_tuple = tuple(log_color, log_top_color, stripped_log_color, stripped_log_top_color, planks_color)
-    modifier.tree(ctx, 'oak', ('#382b18', None, '#846a3a', None, '#67502c'), modifier.TreeType.Overworld)
-    modifier.tree(ctx, 'spruce', ('#553a1f', None, '#544525', None, '#553a1f'), modifier.TreeType.Overworld)
+    modifier.tree(ctx, 'oak', ('#4c3d26', None, '#846a3a', None, '#67502c'), modifier.TreeType.Overworld)
+    modifier.tree(ctx, 'spruce', ('#2e1c0a', None, '#544525', None, '#553a1f'), modifier.TreeType.Overworld)
     modifier.tree(ctx, 'birch', ('#aea6a4', None, '#9d8754', None, '#907e58'), modifier.TreeType.Overworld)
-    modifier.tree(ctx, 'jungle', ('#635820', None, '#977c45', None, '#68462f'), modifier.TreeType.Overworld)
+    modifier.tree(ctx, 'jungle', ('#403612', None, '#977c45', None, '#68462f'), modifier.TreeType.Overworld)
     modifier.tree(ctx, 'acacia', ('#5b554d', None, '#8f4c2a', None, '#7b4024'), modifier.TreeType.Overworld)
     modifier.tree(ctx, 'dark_oak', ('#584428', '#53381a', '#32281a', None, '#291a0c'), modifier.TreeType.Overworld)
     modifier.tree(ctx, 'mangrove', ('#3c2f23', '#3c2f23', '#632122', None, '#5d1c1e'), modifier.TreeType.Overworld)
@@ -78,21 +78,33 @@ def proc_common(ctx: common.McContext) -> None:
 
     # there is no bamboo leaves, so no need to process it
 
-    # there is a extra leaves type: azalea_leaves (杜鹃)
+    # there is a extra leaves type: azalea leaves (杜鹃), flowering azalea leaves (盛开的杜鹃)
     modifier.tree_leaves(ctx, 'azalea', None)
+    modifier.tree_leaves(ctx, 'flowering_azalea', None)
 
     # nether leaves (nether wart + shroomlight) do not have levels, so we just border it.
     modifier.border_block(ctx, 'nether_wart_block', '#3e0808')
     modifier.border_block(ctx, 'warped_wart_block', '#13585d')
     modifier.border_block(ctx, 'shroomlight', '#b62f09')
 
+
+def proc_overworld(ctx: common.McContext) -> None:
     # ===== overworld block =====
+    # stone and its variants
     # stone, cobblestone, deepslate, cobbled deepslate
     modifier.border_block(ctx, 'stone', '#5d5c5c')
     modifier.border_block(ctx, 'cobblestone', '#4e4d4d')
     modifier.border_block(ctx, 'deepslate', '#202028')
     modifier.border_block(ctx, 'cobbled_deepslate', '#2b2b30')
     # todo...
+    # overworld stone variants
+    # diorite (闪长岩，白色的), andesite (安山岩，灰色的), granite (花岗岩，棕色的)
+    # tuff (凝灰岩，新加的灰色的), calcite (方解石，新加的白色的)
+    modifier.border_block(ctx, 'diorite', '#757373')
+    modifier.border_block(ctx, 'andesite', '#514f4f')
+    modifier.border_block(ctx, 'granite', '#5f4034')
+    modifier.border_block(ctx, 'tuff', '#4d5046')
+    modifier.border_block(ctx, 'calcite', '#b3b3b3')
 
     # dirt and its variants
     # dirt
@@ -112,25 +124,42 @@ def proc_common(ctx: common.McContext) -> None:
     modifier.grass_border_block(ctx, 'dirt_path_side', 2, 1, '#775f33', '#664730', True)
     # grass block, myselium block with snow
     modifier.grass_border_block(ctx, 'grass_block_snow', 4, 4, '#b5e1e1', '#664730', False)
+    # clay
+    modifier.border_block(ctx, 'clay', '#8a919d')
+
+    # mud and its variants
+    # mud
+    modifier.border_block(ctx, 'mud', '#252129')
+    # muddy mangrove
+    modifier.border_block(ctx, 'muddy_mangrove_roots_top', '#3b3334')
+    modifier.border_block(ctx, 'muddy_mangrove_roots_side', '#363239')
+    # packed mud
+    modifier.border_block(ctx, 'packed_mud', '#7f5d4c')
 
     # sand and its varients
+    # sand, sandstone
     modifier.border_block(ctx, 'sand', '#cab57d')
-    # todo...
-
-    # dirt-like blocks
-    modifier.border_block(ctx, 'clay', '#8a919d')
+    modifier.border_block(ctx, 'sandstone', '#9a8049')
+    modifier.border_block(ctx, 'sandstone_top', '#9a8049')
+    modifier.border_block(ctx, 'sandstone_bottom', '#9a8049')
+    # red sand, red sandstone
+    modifier.border_block(ctx, 'red_sand', '#61300a')
+    modifier.border_block(ctx, 'red_sandstone', '#61300a')
+    modifier.border_block(ctx, 'red_sandstone_top', '#61300a')
+    modifier.border_block(ctx, 'red_sandstone_bottom', '#61300a')
+    # gravel
     modifier.border_block(ctx, 'gravel', '#5d5555')
+    # sus sand and sus gravel
+    # support sus gravel since 1.20 (15)
+    for i in range(4):
+        modifier.border_block(ctx, f'suspicious_sand_{i}', '#ebe17f')
+    if ctx.get_mc_ver() >= 15:
+        for i in range(4):
+            modifier.border_block(ctx, f'suspicious_gravel_{i}', '#7d7575')
 
-    # todo...
-
-    # overworld stone variants
-    modifier.border_block(ctx, 'diorite', '#757373')
-    modifier.border_block(ctx, 'andesite', '#514f4f')
-    modifier.border_block(ctx, 'granite', '#5f4034')
-    modifier.border_block(ctx, 'tuff', '#4d5046')
-    modifier.border_block(ctx, 'calcite', '#b3b3b3')
-    # obsidian
+    # obsidian and its variants
     modifier.border_block(ctx, 'obsidian', '#3b2754')
+    modifier.border_block(ctx, 'crying_obsidian', '#3b2754')
 
     # ice, packed ice, blue ice, snow
     # 3 types ice
@@ -150,17 +179,13 @@ def proc_common(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'moss_block', '#384926')
     modifier.border_block(ctx, 'azalea_top', '#50692c')
     
-
-
-    # nether block
+def proc_nether(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'magma', '#421616')
     modifier.border_block(ctx, 'soul_sand', '#3a2d25')
     modifier.border_block(ctx, 'soul_soil', '#3b2e25')
     modifier.border_block(ctx, 'blackstone', '#3c3947')
     modifier.border_block(ctx, 'blackstone_top', '#3c3947')
-    # todo...
 
-    # end block
+def proc_end(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'end_stone', '#aba579')
     # todo...
-
