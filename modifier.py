@@ -207,3 +207,51 @@ def tree_leaves(ctx: common.McContext, tree_name: str, color: str | None) -> Non
     # adding border for tree texture is enough
     if color is not None:
         border_block(ctx, name, color)
+
+def infested_stone(ctx: common.McContext, name: str, color: str, is_deepslate: bool) -> None:
+    # decide how many texture we need to process
+    proc_tex: tuple[str, ...]
+    if is_deepslate: proc_tex = (name, f'{name}_top')
+    else: proc_tex = (name, )
+
+    # create infested block texture from normal one
+    for tex_name in proc_tex:
+        with common.ImgContext.from_existing(ctx, tex_name, f'infested_{tex_name}') as imgctx:
+            drawer.border(imgctx, color)
+
+    # decide how many models we need to process
+    proc_model: tuple[str, ...]
+    if is_deepslate: proc_model = (name, f'{name}_mirrored')
+    else: proc_model = (name, )
+    # create infested model from original one
+    for model_name in proc_model:
+        model: dict[str, typing.Any] = ctx.read_model(model_name)
+        # replace all values in texture field
+        model_textures: dict[str, str] = model['textures']
+        for k, v in model_textures.items():
+            # try match any modified texture name and rectify it
+            for tex_name in proc_tex:
+                if v == f'minecraft:block/{tex_name}':
+                    model_textures[k] = f'minecraft:block/infested_{tex_name}'
+                    break
+        ctx.write_model(f'infested_{model_name}', model)
+
+    # modify infested blockstate
+    blockstate: dict[str, typing.Any] = ctx.read_blockstate(f'infested_{name}')
+    variants: dict[str, typing.Any] = blockstate['variants']
+    # iterate varients list to get all dict which need to be processed
+    extracted_dict: list[dict[str, typing.Any]] = []
+    for k, v in variants.items():
+        if type(v) == list:
+            extracted_dict.extend(typing.cast(list[dict[str, typing.Any]], v))
+        else:
+            extracted_dict.append(typing.cast(dict[str, typing.Any], v))
+    # replace extracted dict model one by one
+    for unit in extracted_dict:
+        # try match model name
+        for model_name in proc_model:
+            if unit['model'] == f'minecraft:block/{model_name}':
+                unit['model'] = f'minecraft:block/infested_{model_name}'
+                break
+    # save blockstate
+    ctx.write_blockstate(f'infested_{name}', blockstate)

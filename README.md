@@ -40,7 +40,9 @@ This resource pack has:
 ### Overworld Blocks
 
 * Stone-like blocks
+  - Add border for stone: stone, cobblestone, deepslate, cobbled deepslate.
   - Add border for stone variants: diorite, andesite, granite, tuff, calcite.
+  - Add significant for infested stone: infested stone, infested cobblestone, infested stone bricks, infested cracked stone bricks, infested mossy stone bricks, infested chiseled stone bricks, infested deepslate (to tell player do not dig them).
 * Dirt-like blocks
   - Add border for dirt, grass block, mycelium, podzol, dirt path, clay.
   - Add significant border for coarse dirt.
@@ -54,6 +56,8 @@ This resource pack has:
 * Snow-like blocks
   - Add border for ice, packed ice, blue ice, frozed ice, snow, snow block.
   - Add sigificant snowflake pattern for powder snow.
+* Cave update blocks:
+  - Add border for moss, moss carpet, azalea, flowering azalea.
 
 ### Marked Block
 

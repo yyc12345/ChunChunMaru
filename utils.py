@@ -87,7 +87,6 @@ def proc_tree(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'warped_wart_block', '#13585d')
     modifier.border_block(ctx, 'shroomlight', '#b62f09')
 
-
 def proc_overworld(ctx: common.McContext) -> None:
     # ===== overworld block =====
     # stone and its variants
@@ -95,8 +94,8 @@ def proc_overworld(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'stone', '#5d5c5c')
     modifier.border_block(ctx, 'cobblestone', '#4e4d4d')
     modifier.border_block(ctx, 'deepslate', '#202028')
+    modifier.border_block(ctx, 'deepslate_top', '#202028')
     modifier.border_block(ctx, 'cobbled_deepslate', '#2b2b30')
-    # todo...
     # overworld stone variants
     # diorite (闪长岩，白色的), andesite (安山岩，灰色的), granite (花岗岩，棕色的)
     # tuff (凝灰岩，新加的灰色的), calcite (方解石，新加的白色的)
@@ -105,6 +104,14 @@ def proc_overworld(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'granite', '#5f4034')
     modifier.border_block(ctx, 'tuff', '#4d5046')
     modifier.border_block(ctx, 'calcite', '#b3b3b3')
+    # infested stone
+    modifier.infested_stone(ctx, 'stone', '#7f4e4e', False)
+    modifier.infested_stone(ctx, 'cobblestone', '#7f4e4e', False)
+    modifier.infested_stone(ctx, 'stone_bricks', '#7f4e4e', False)
+    modifier.infested_stone(ctx, 'cracked_stone_bricks', '#7f4e4e', False)
+    modifier.infested_stone(ctx, 'mossy_stone_bricks', '#7f4e4e', False)
+    modifier.infested_stone(ctx, 'chiseled_stone_bricks', '#7f4e4e', False)
+    modifier.infested_stone(ctx, 'deepslate', '#7f4e4e', True)
 
     # dirt and its variants
     # dirt
@@ -116,10 +123,10 @@ def proc_overworld(ctx: common.McContext) -> None:
     # dirt variants: coarse dirt (砂土), mycelium (菌丝体), podzol (灰化土), dirt path (土径)
     # these dirt variants is not included because they are not importent: rooted dirt (缠根泥土), farm land (耕地)
     modifier.border_block(ctx, 'coarse_dirt', '#676767')
-    modifier.border_block(ctx, 'mycelium_top', '#7b6d73')
-    modifier.grass_border_block(ctx, 'mycelium_side', 4, 3, '#7b6d73', '#664730', False)
-    modifier.border_block(ctx, 'podzol_top', '#6a4418')
-    modifier.grass_border_block(ctx, 'podzol_side', 3, 3, '#6a4418', '#664730', False)
+    modifier.border_block(ctx, 'mycelium_top', '#83757b')
+    modifier.grass_border_block(ctx, 'mycelium_side', 4, 3, '#83757b', '#664730', False)
+    modifier.border_block(ctx, 'podzol_top', '#7a5428')
+    modifier.grass_border_block(ctx, 'podzol_side', 3, 3, '#7a5428', '#664730', False)
     modifier.border_block(ctx, 'dirt_path_top', '#775f33')
     modifier.grass_border_block(ctx, 'dirt_path_side', 2, 1, '#775f33', '#664730', True)
     # grass block, myselium block with snow
@@ -175,9 +182,14 @@ def proc_overworld(ctx: common.McContext) -> None:
     # it need to add specific pattern
     modifier.snowflake_overlay_block(ctx, 'powder_snow')
 
-    # moss, azalea
+    # cave update blocks
+    # moss (苔藓), moss carpet (use the same texture as block)
     modifier.border_block(ctx, 'moss_block', '#384926')
+    # azalea (杜鹃花从), flowering azalea (盛开的杜鹃花从)
     modifier.border_block(ctx, 'azalea_top', '#50692c')
+    modifier.grass_border_block(ctx, 'azalea_side', 7, 8, '#50692c', None, False)
+    modifier.border_block(ctx, 'flowering_azalea_top', '#50692c')
+    modifier.grass_border_block(ctx, 'flowering_azalea_side', 7, 8, '#50692c', None, False)
     
 def proc_nether(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'magma', '#421616')
