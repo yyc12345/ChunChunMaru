@@ -35,12 +35,38 @@ This resource pack has:
 
 ### Tree Blocks
 
-* Add border for 
+* Add decay level and persistent status display for all leaves except nether tree leaves because they are not real leaves (they can not decay).
+* Add border for specific leaves, log, stripped log, wood, stripped wood, planks. Following table describe which one were added.
+
+|Type|Log (±Stripped) / Wood (±Stripped)|Planks|Leaves|
+|:---|:---|:---|:---|
+|oak|√|√|√|
+|spruce|√|√|×|
+|birch|√|√|√|
+|jungle|√|√|×|
+|acacia|√|√|×|
+|dark oak|√|√|×|
+|mangrove|√|√|×|
+|cherry|√|√|√|
+|bamboo|√|√|N/A|
+|crimson|√|√|√|
+|warped|√|√|√|
+|azalea|N/A|N/A|√|
+|flowering azalea|N/A|N/A|√|
+
+### Food Blocks
+
+* Crops Blocks
+  - Add border for melon, pumpkin, jack o latern.
+  - Add border for hay block.
+  - Add border for red mushroom block, brown mushroom block, mushroom stem.
+* Bee Blocks
+  - Add border for honeycomb block.
 
 ### Overworld Blocks
 
 * Stone-like blocks
-  - Add border for stone: stone, cobblestone, deepslate, cobbled deepslate.
+  - Add border for stone: stone, cobblestone, deepslate, cobbled deepslate, deepslate tiles, cracked deepslate tiles.
   - Add border for stone variants: diorite, andesite, granite, tuff, calcite.
   - Add significant for infested stone: infested stone, infested cobblestone, infested stone bricks, infested cracked stone bricks, infested mossy stone bricks, infested chiseled stone bricks, infested deepslate (to tell player do not dig them).
 * Dirt-like blocks
@@ -58,34 +84,17 @@ This resource pack has:
   - Add sigificant snowflake pattern for powder snow.
 * Cave update blocks:
   - Add border for moss, moss carpet, azalea, flowering azalea.
+  - Add border for dripstone.
+* Ocean blocks:
+  - Add border for prismarine, prismarine bricks, dark prismarine.
 
-### Marked Block
+### Nether Blocks
 
-* Slight border for common used blocks which also easily be confused when counting, such as cobblestone, bamboo block series and etc.
-  - All tree block, including log, wood, planks, no matter stripped
-  - All stone block, such as cobblestone.
-* Significant border for all ore block.
-  - Deepslate ore and nether ore also has border.
-  - Ancient debries will have a animated shiny border.
-  - Raw ore block (such as raw iron block crafted by 9 raw iron) also have border. Because they may appear in vein.
+* Stone-like blocks
 
-### Redstone
+### End Blocks
 
-* More simple redstone wire and intensity shown.
-* Redstone block status display.
-  - Discern piston and sticky piston.
-  - Repeater, comparator level and status.
-  - Dispenser, observer status.
-  - Door, trap door, button, pressure plate, lever.
-* Leaf decay level.
-* Music box tone and instrument.
-* Cauldron, composter, beehive, bee nest level.
-
-### Misc
-
-* Massively modification of bedrock and netherrack to let them look not dizzy in world.
-* Red border for infested blocks to let player know do not dig them.
-* Border for sus sand.
+* Add border for end stone, end stone bricks.
 
 ## Dependencies
 

@@ -87,15 +87,33 @@ def proc_tree(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'warped_wart_block', '#13585d')
     modifier.border_block(ctx, 'shroomlight', '#b62f09')
 
+def proc_food(ctx: common.McContext) -> None:
+    # pumpkin, jack o latern, watermelon
+    modifier.border_block(ctx, 'melon_side', '#3e711d')
+    # hay
+    modifier.border_block(ctx, 'hay_block_side', '#78631c')
+    modifier.border_block(ctx, 'hay_block_top', '#78631c')
+    # mushroom
+    modifier.border_block(ctx, 'brown_mushroom_block', '#725745')
+    modifier.border_block(ctx, 'red_mushroom_block', '#a41b1a')
+    modifier.border_block(ctx, 'mushroom_stem', '#ada797')
+
+    # bee related
+    # honeycomb (蜜脾块)
+    modifier.border_block(ctx, 'honeycomb_block', '#b86309')
+
 def proc_overworld(ctx: common.McContext) -> None:
     # ===== overworld block =====
     # stone and its variants
-    # stone, cobblestone, deepslate, cobbled deepslate
+    # stone, cobblestone
     modifier.border_block(ctx, 'stone', '#5d5c5c')
     modifier.border_block(ctx, 'cobblestone', '#4e4d4d')
+    # deepslate, cobbled deepslate, deepslate tiles, cracked deepslate tiles
     modifier.border_block(ctx, 'deepslate', '#202028')
     modifier.border_block(ctx, 'deepslate_top', '#202028')
     modifier.border_block(ctx, 'cobbled_deepslate', '#2b2b30')
+    modifier.border_block(ctx, 'deepslate_tiles', '#1e1c1c')
+    modifier.border_block(ctx, 'cracked_deepslate_tiles', '#242424')
     # overworld stone variants
     # diorite (闪长岩，白色的), andesite (安山岩，灰色的), granite (花岗岩，棕色的)
     # tuff (凝灰岩，新加的灰色的), calcite (方解石，新加的白色的)
@@ -182,7 +200,14 @@ def proc_overworld(ctx: common.McContext) -> None:
     # it need to add specific pattern
     modifier.snowflake_overlay_block(ctx, 'powder_snow')
 
+    # ocean block
+    modifier.border_block(ctx, 'prismarine', '#386e5a')
+    modifier.border_block(ctx, 'prismarine_bricks', '#344f48')
+    modifier.border_block(ctx, 'dark_prismarine', '#162720')
+
     # cave update blocks
+    # dripstone
+    modifier.border_block(ctx, 'dripstone_block', '#694f4a')
     # moss (苔藓), moss carpet (use the same texture as block)
     modifier.border_block(ctx, 'moss_block', '#384926')
     # azalea (杜鹃花从), flowering azalea (盛开的杜鹃花从)
@@ -192,6 +217,7 @@ def proc_overworld(ctx: common.McContext) -> None:
     modifier.grass_border_block(ctx, 'flowering_azalea_side', 7, 8, '#50692c', None, False)
     
 def proc_nether(ctx: common.McContext) -> None:
+    modifier.border_block(ctx, 'glowstone', '#573418')
     modifier.border_block(ctx, 'magma', '#421616')
     modifier.border_block(ctx, 'soul_sand', '#3a2d25')
     modifier.border_block(ctx, 'soul_soil', '#3b2e25')
@@ -200,4 +226,5 @@ def proc_nether(ctx: common.McContext) -> None:
 
 def proc_end(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'end_stone', '#aba579')
+    modifier.border_block(ctx, 'end_stone_bricks', '#aba579')
     # todo...
