@@ -47,7 +47,7 @@ def border(ctx: common.ImgContext, color: str) -> None:
             width=1
         )
 
-def colorful_border(ctx: common.ImgContext, ref_ctx: common.ImgContext) -> None:
+def shiny_border(ctx: common.ImgContext, ref_ctx: common.ImgContext) -> None:
     """
     Add a shiny animated border for block. Usually used by ancient debris.
     """

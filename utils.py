@@ -21,8 +21,8 @@ def proc_ore(ctx: common.McContext) -> None:
     modifier.border_block(ctx, 'nether_gold_ore', '#fcee4b')
     modifier.border_block(ctx, 'nether_quartz_ore', '#d4caba')
     # nether ancient debris need colorful border
-    modifier.colorful_border_block(ctx, 'ancient_debris_side')
-    modifier.colorful_border_block(ctx, 'ancient_debris_top')
+    modifier.shiny_border_block(ctx, 'ancient_debris_side')
+    modifier.shiny_border_block(ctx, 'ancient_debris_top')
     # raw ore block
     modifier.border_block(ctx, 'raw_copper_block', '#a65947')
     modifier.border_block(ctx, 'raw_gold_block', '#fcee4b')
@@ -101,6 +101,43 @@ def proc_food(ctx: common.McContext) -> None:
     # bee related
     # honeycomb (蜜脾块)
     modifier.border_block(ctx, 'honeycomb_block', '#b86309')
+
+def proc_colorful(ctx: common.McContext) -> None:
+    ## color_tuple = (
+    #   white, orange, magenta, light_blue, 
+    #   yellow, lime, pink, gray, 
+    #   light_gray, cyan, purple, blue, 
+    #   brown, green, red, black
+    # )
+
+    # all concrete varients
+    modifier.colorful_block(ctx, 'concrete', (
+        '#dadedf', '#e46f00', '#b544ac', '#3093cc',
+        '#f5c02b', '#68af21', '#da729a', '#424549', 
+        '#828278', '#1c7f8f', '#6d28a3', '#383a99', 
+        '#6d492b', '#4f612a', '#992f2f', '#121621'
+    ))
+
+    # concrete powder do not have border
+
+    # all terracotta varients and no color terracotta
+    modifier.border_block(ctx, 'terracotta', '#87533b')
+    modifier.colorful_block(ctx, 'terracotta', (
+        '#ba9d90', '#8c471f', '#875062', '#655f79',
+        '#a1721d', '#57632a', '#8c4344', '#2c201b', 
+        '#735951', '#474c4c', '#623a47', '#372c45', 
+        '#38241a', '#3d4320', '#80372b', '#190f0b'
+    ))
+
+    # glazed terracottta do not have border
+
+    # only white wool for wool
+    modifier.colorful_block(ctx, 'wool', (
+        '#bec4c5', None, None, None,
+        None, None, None, None,
+        None, None, None, None,
+        None, None, None, None
+    ))
 
 def proc_overworld(ctx: common.McContext) -> None:
     # ===== overworld block =====

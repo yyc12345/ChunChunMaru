@@ -7,10 +7,10 @@ def border_block(ctx: common.McContext, name: str, color: str) -> None:
     with common.ImgContext.from_existing(ctx, name, name) as imgctx:
         drawer.border(imgctx, color)
 
-def colorful_border_block(ctx: common.McContext, name: str) -> None:
+def shiny_border_block(ctx: common.McContext, name: str) -> None:
     with common.ImgContext.from_existing(ctx, name, None) as refctx:
         with common.ImgContext.from_empty(ctx, (16, 16), name) as imgctx:
-            drawer.colorful_border(imgctx, refctx)
+            drawer.shiny_border(imgctx, refctx)
 
 def snowflake_overlay_block(ctx: common.McContext, name: str) -> None:
     with common.ImgContext.from_existing(ctx, name, name) as imgctx:
@@ -255,3 +255,30 @@ def infested_stone(ctx: common.McContext, name: str, color: str, is_deepslate: b
                 break
     # save blockstate
     ctx.write_blockstate(f'infested_{name}', blockstate)
+
+## color_tuple = (
+#   white, orange, magenta, light_blue, 
+#   yellow, lime, pink, gray, 
+#   light_gray, cyan, purple, blue, 
+#   brown, green, red, black
+# )
+ColorfulBlockColors_t = tuple[
+    str | None, str | None, str | None, str | None, 
+    str | None, str | None, str | None, str | None, 
+    str | None, str | None, str | None, str | None, 
+    str | None, str | None, str | None, str | None
+]
+ColorfulBlockPrefix: tuple[str, ...] = (
+    'white', 'orange', 'magenta', 'light_blue',
+    'yellow', 'lime', 'pink', 'gray',
+    'light_gray', 'cyan', 'purple', 'blue',
+    'brown', 'green', 'red', 'black'
+)
+def colorful_block(ctx: common.McContext, name: str, color_tuple: ColorfulBlockColors_t) -> None:
+    # combine prefix and color, and process them respectively.
+    for (color_prefix, color) in zip(ColorfulBlockPrefix, color_tuple):
+        if color is not None:
+            tex_name: str = f'{color_prefix}_{name}'
+            with common.ImgContext.from_existing(ctx, tex_name, tex_name) as imgctx:
+                drawer.border(imgctx, color)
+

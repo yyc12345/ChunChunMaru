@@ -63,6 +63,30 @@ This resource pack has:
 * Bee Blocks
   - Add border for honeycomb block.
 
+### Colorful Blocks
+
+Add border for specific 16 color blocks which are described following.
+
+|Color|Concrete|Concrete Powder|Terracotta|Glazed Terracotta|Wool|
+|:---|:---|:---|:---|:---|:---|
+|white|√|×|√|×|√|
+|orange|√|×|√|×|×|
+|mangenta|√|×|√|×|×|
+|light blue|√|×|√|×|×|
+|yellow|√|×|√|×|×|
+|lime|√|×|√|×|×|
+|pink|√|×|√|×|×|
+|gray|√|×|√|×|×|
+|light gray|√|×|√|×|×|
+|cyan|√|×|√|×|×|
+|purple|√|×|√|×|×|
+|blue|√|×|√|×|×|
+|brown|√|×|√|×|×|
+|green|√|×|√|×|×|
+|red|√|×|√|×|×|
+|black|√|×|√|×|×|
+|no color|N/A|N/A|√|N/A|N/A|
+
 ### Overworld Blocks
 
 * Stone-like blocks

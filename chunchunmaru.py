@@ -6,6 +6,7 @@ def build_res_pack(ctx: common.McContext) -> None:
     utils.proc_redstone(ctx)
     utils.proc_tree(ctx)
     utils.proc_food(ctx)
+    utils.proc_colorful(ctx)
 
     utils.proc_overworld(ctx)
     utils.proc_nether(ctx)
